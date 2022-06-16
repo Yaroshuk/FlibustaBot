@@ -23,12 +23,16 @@ class Parser {
     });
 
     if (response.status === 200) {
-      console.log(this.getResult(response.data))
+      const result = await this.parseSearchResult(response.data)
+      console.log(result)
+      if (result && result.length && result[1]) {
+        this.getBook(result[1].src!)
+      }
     }
     // console.log(data.status)
   }
 
-  async getResult(data: string) {
+  async parseSearchResult(data: string) {
     const $ = cheerio.load(data)
 
     const result = $('#main>ul').last().children().map((index, elem) => ({
@@ -38,6 +42,31 @@ class Parser {
     })).get()
 
     return result
+  }
+
+  async parseBookPage(data: string) {
+    const $ = cheerio.load(data)
+
+    const result: any = {}
+
+    result.title = $('#main>h1').first().text()
+    result.img = $('#main>img').first().text()
+    result.post = $('#main>p').first().text()
+    result.author = {
+      name: $('#main>a').first().text(),
+      link: $('#main>a').first().attr('href')
+    }
+
+    return result
+  }
+
+  async getBook(url: string) {
+    const response = await axios(`${this.url}${url}`)
+
+    if (response.status === 200) {
+      const book = await this.parseBookPage(response.data)
+      console.log(book)
+    }
   }
 }
 
