@@ -1,11 +1,11 @@
-import axios from "axios"
-import cheerio from "cheerio"
+import axios from 'axios'
+import cheerio from 'cheerio'
 
 class Parser {
   static instance: Parser
 
-  private url:string = process.env.URL ?? ''
-  private searchUrl:string = process.env.SEARCH_URL ?? ''
+  private url: string = process.env.URL ?? ''
+  private searchUrl: string = process.env.SEARCH_URL ?? ''
 
   constructor() {
     if (Parser.instance) {
@@ -18,9 +18,9 @@ class Parser {
   async search(search: string) {
     const response = await axios(this.searchUrl, {
       params: {
-        ask: search.trim()
-      }
-    });
+        ask: search.trim(),
+      },
+    })
 
     if (response.status === 200) {
       const result = await this.parseSearchResult(response.data)
@@ -35,11 +35,15 @@ class Parser {
   async parseSearchResult(data: string) {
     const $ = cheerio.load(data)
 
-    const result = $('#main>ul').last().children().map((index, elem) => ({
-      title: $(elem).children('a').first().text(),
-      src: $(elem).children('a').first().attr('href'),
-      author: $(elem).children('a').last().text()
-    })).get()
+    const result = $('#main>ul')
+      .last()
+      .children()
+      .map((index, elem) => ({
+        title: $(elem).children('a').first().text(),
+        src: $(elem).children('a').first().attr('href'),
+        author: $(elem).children('a').last().text(),
+      }))
+      .get()
 
     return result
   }
@@ -54,7 +58,7 @@ class Parser {
     result.post = $('#main>p').first().text()
     result.author = {
       name: $('#main>a').first().text(),
-      link: $('#main>a').first().attr('href')
+      link: $('#main>a').first().attr('href'),
     }
 
     return result
