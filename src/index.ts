@@ -1,14 +1,30 @@
+/**/
 import 'dotenv/config'
-import Parser from './parser'
-import TelegramBot from './telegramBot'
+import { Telegraf, session, Scenes, Context } from 'telegraf'
+import startScene from './scenes/start'
+import mongoose from 'mongoose'
 
-const main = async () => {
-  const parser = new Parser()
+export interface MyContext extends Context {
+  // will be available under `ctx.myContextProp`
+  myContextProp: string
 
-  parser.search('географ')
-
-  const tmBot = new TelegramBot(process.env.TM_TOKEN!)
-  tmBot.launch()
+  // declare scene type
+  scene: Scenes.SceneContextScene<MyContext>
 }
 
-main()
+mongoose.connect(process.env.DB_URL!, () => {
+  const bot = new Telegraf<MyContext>(process.env.TM_TOKEN!)
+
+  const stage = new Scenes.Stage<MyContext>([startScene], { ttl: 10 })
+
+  bot.use(session())
+  bot.use(stage.middleware())
+
+  bot.start((ctx) => ctx.scene.enter('Start'))
+
+  bot.hears('hi', (ctx) => ctx.reply('hi'))
+
+  bot.launch()
+
+  console.log('connected')
+})
