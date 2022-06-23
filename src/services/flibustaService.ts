@@ -15,7 +15,7 @@ class FlibustaService {
     FlibustaService.instance = this
   }
 
-  public async getSearchResult(search: string) {
+  public async getSearchResult(search: string): Promise<any[]> {
     try {
       const response = await axios(this.searchUrl, {
         params: {
@@ -25,8 +25,10 @@ class FlibustaService {
 
       if (response.status === 200) {
         const result = await parseSearchResult(response.data)
-        console.log(result)
+        return result
       }
+
+      return []
     } catch (error) {
       throw new Error(`Flibusta Error: ${error}`)
     }
