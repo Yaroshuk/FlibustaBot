@@ -2,6 +2,7 @@
 import 'dotenv/config'
 import { Telegraf, session, Scenes, Context } from 'telegraf'
 import { start, search } from './scenes'
+import { mainKeyboard } from './utils/keyboard'
 
 export interface MyContext extends Context {
   // will be available under `ctx.myContextProp`
@@ -21,9 +22,11 @@ function main() {
 
   bot.start((ctx) => ctx.scene.enter('Start'))
 
-  bot.hears('Поиск', (ctx) => ctx.scene.enter('Search'))
+  bot.hears('Искать', (ctx) => ctx.scene.enter('Search'))
 
-  bot.action('search', (ctx) => ctx.scene.enter('Search'))
+  bot.hears('Назад', (ctx) => {
+    ctx.reply('Что дальше?', mainKeyboard)
+  })
 
   bot.launch()
 

@@ -1,12 +1,14 @@
 import { Context, Scenes } from 'telegraf'
 import { MyContext } from '..'
+import { mainKeyboard } from '../utils/keyboard'
 
 const start = new Scenes.BaseScene<MyContext>('Start')
 
 start.enter(async (ctx: Context) => {
-  await ctx.reply('Welcome')
-
-  console.log(ctx.from)
+  await ctx.reply(
+    'Привет. Это бот для поиска книг с сайта Flibusta. Воспользуйся меню снизу или напиши "Искать" чтобы начать',
+    mainKeyboard
+  )
 })
 
 export default start
