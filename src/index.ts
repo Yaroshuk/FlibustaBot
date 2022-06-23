@@ -1,7 +1,7 @@
 /**/
 import 'dotenv/config'
 import { Telegraf, session, Scenes, Context } from 'telegraf'
-import startScene from './scenes/start'
+import { start, search } from './scenes'
 import mongoose from 'mongoose'
 
 export interface MyContext extends Context {
@@ -12,19 +12,38 @@ export interface MyContext extends Context {
   scene: Scenes.SceneContextScene<MyContext>
 }
 
-mongoose.connection.on('open', () => {
+function main() {
   const bot = new Telegraf<MyContext>(process.env.TM_TOKEN!)
 
-  const stage = new Scenes.Stage<MyContext>([startScene], { ttl: 10 })
+  const stage = new Scenes.Stage<MyContext>([start, search], { ttl: 10 })
 
   bot.use(session())
   bot.use(stage.middleware())
 
   bot.start((ctx) => ctx.scene.enter('Start'))
 
-  bot.hears('hi', (ctx) => ctx.reply('hi'))
+  bot.command('search', (ctx) => ctx.scene.enter('Search'))
 
   bot.launch()
 
   console.log('connected')
-})
+}
+
+main()
+
+// mongoose.connection.on('open', () => {
+//   const bot = new Telegraf<MyContext>(process.env.TM_TOKEN!)
+
+//   const stage = new Scenes.Stage<MyContext>([start], { ttl: 10 })
+
+//   bot.use(session())
+//   bot.use(stage.middleware())
+
+//   bot.start((ctx) => ctx.scene.enter('Start'))
+
+//   bot.hears('hi', (ctx) => ctx.reply('hi'))
+
+//   bot.launch()
+
+//   console.log('connected')
+// })

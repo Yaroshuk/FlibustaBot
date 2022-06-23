@@ -1,10 +1,10 @@
 import { Context, Scenes } from 'telegraf'
-import { MyContext } from '../..'
-import { User } from '../../mongoDB'
+import { MyContext } from '..'
+import { User } from '../mongoDB'
 
-const startScene = new Scenes.BaseScene<MyContext>('Start')
+const start = new Scenes.BaseScene<MyContext>('Start')
 
-startScene.enter(async (ctx: Context) => {
+start.enter(async (ctx: Context) => {
   const userId = String(ctx.from?.id)
   const user = await User.findById(userId)
   console.log('WWW', user)
@@ -26,4 +26,4 @@ startScene.enter(async (ctx: Context) => {
   console.log(ctx.from)
 })
 
-export default startScene
+export default start
