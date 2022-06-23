@@ -12,7 +12,7 @@ export interface MyContext extends Context {
   scene: Scenes.SceneContextScene<MyContext>
 }
 
-mongoose.connect(process.env.DB_URL!, () => {
+mongoose.connection.on('open', () => {
   const bot = new Telegraf<MyContext>(process.env.TM_TOKEN!)
 
   const stage = new Scenes.Stage<MyContext>([startScene], { ttl: 10 })
