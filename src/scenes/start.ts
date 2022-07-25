@@ -1,8 +1,8 @@
 import { Context, Scenes } from 'telegraf'
-import { MyContext } from '..'
+import { IMyContext } from '../types'
 import { mainKeyboard } from '../utils/keyboard'
 
-const start = new Scenes.BaseScene<MyContext>('Start')
+const start = new Scenes.BaseScene<IMyContext>('Start')
 
 start.enter(async (ctx: Context) => {
   await ctx.reply(

@@ -40,7 +40,7 @@ class FlibustaService {
 
       if (response.status === 200) {
         const book = await parseBookPage(response.data)
-        console.log(book)
+        return book
       }
     } catch (error) {
       throw new Error(`Flibusta Error: ${error}`)

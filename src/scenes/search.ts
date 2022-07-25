@@ -1,16 +1,14 @@
 import { Context, Scenes } from 'telegraf'
-import { MyContext } from '../..'
 import { backKeyboard, mainKeyboard, resultKeyboard } from '../utils/keyboard'
 import FlibustaService from '../services/flibustaService'
+import { IMyContext } from '../types'
 
 const flibusta = new FlibustaService()
 
-const search = new Scenes.BaseScene<MyContext>('Search')
+const search = new Scenes.BaseScene<IMyContext>('Search')
 
 search.enter(async (ctx: Context) => {
   ctx.reply('Какую книгу ищем?', backKeyboard)
-
-  console.log(ctx.from)
 })
 
 search.hears('Назад', (ctx) => {
@@ -26,8 +24,6 @@ search.on('text', async (ctx) => {
 
   const result = await flibusta.getSearchResult(searchText)
 
-  console.log('rr', result)
-
   if (result && result.length) {
     await ctx.reply('Результаты поиска:', resultKeyboard(result))
   } else {
@@ -35,9 +31,14 @@ search.on('text', async (ctx) => {
   }
 })
 
-search.action(/book/, (ctx) => {
+search.action(/book/, async (ctx) => {
   const data = ctx.callbackQuery.data
-
+  if (data) {
+    const book = await flibusta.getBook(data.split('-')[1])
+    if (book) {
+      ctx.session.book = book
+    }
+  }
   console.log('action', data)
 })
 

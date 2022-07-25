@@ -55,7 +55,7 @@ class Parser {
 
     result.title = $('#main>h1').first().text()
     result.img = $('#main>img').first().text()
-    result.post = $('#main>p').first().text()
+    result.description = $('#main>p').first().text()
     result.author = {
       name: $('#main>a').first().text(),
       link: $('#main>a').first().attr('href'),

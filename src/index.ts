@@ -1,21 +1,14 @@
 /**/
 import 'dotenv/config'
-import { Telegraf, session, Scenes, Context } from 'telegraf'
+import { Telegraf, Scenes, session } from 'telegraf'
 import { start, search } from './scenes'
+import { IMyContext } from './types'
 import { mainKeyboard } from './utils/keyboard'
 
-export interface MyContext extends Context {
-  // will be available under `ctx.myContextProp`
-  myContextProp: string
-
-  // declare scene type
-  scene: Scenes.SceneContextScene<MyContext>
-}
-
 function main() {
-  const bot = new Telegraf<MyContext>(process.env.TM_TOKEN!)
+  const bot = new Telegraf<IMyContext>(process.env.TM_TOKEN!)
 
-  const stage = new Scenes.Stage<MyContext>([start, search], { ttl: 10 })
+  const stage = new Scenes.Stage<IMyContext>([start, search], { ttl: 10 })
 
   bot.use(session())
   bot.use(stage.middleware())
