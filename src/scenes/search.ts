@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Context, Scenes } from 'telegraf'
 import { backKeyboard, mainKeyboard, resultKeyboard } from '../utils/keyboard'
 import FlibustaService from '../services/flibustaService'
@@ -24,8 +25,8 @@ search.on('text', async (ctx) => {
 
   const result = await flibusta.getSearchResult(searchText)
 
-  if (result && result.length) {
-    await ctx.reply('Результаты поиска:', resultKeyboard(result))
+  if (result?.books && result?.books.length) {
+    await ctx.reply('Результаты поиска:', resultKeyboard(result.books))
   } else {
     ctx.reply('Что-то пошло не так')
   }

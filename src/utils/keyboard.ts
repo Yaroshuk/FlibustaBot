@@ -5,9 +5,9 @@ export const mainKeyboard = Markup.keyboard([['Искать'], ['О боте', '
 export const backKeyboard = Markup.keyboard([['Назад']])
 
 export const resultKeyboard = (books: Record<'title' | 'author' | 'src', string>[]) => {
-  const result = books.map((item) =>
-    Markup.button.callback(`${item.title} [${item.author}]`, `book-${item.src}`, false)
-  )
+  const result = books.map((item) => {
+    return [Markup.button.callback(`${item.title} [${item.author}]`, `book-${item.src}`, false)]
+  })
 
-  return Markup.inlineKeyboard(result, { columns: 1 })
+  return Markup.inlineKeyboard(result)
 }
