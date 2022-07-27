@@ -1,5 +1,6 @@
 import cheerio from 'cheerio'
 import { getParamFromURL } from '.'
+import { Pagination } from '../types'
 
 export const parseSearchResult = async (data: string) => {
   const $ = await cheerio.load(data)
@@ -21,21 +22,29 @@ export const parseSearchResult = async (data: string) => {
   return result
 }
 
-export const parsePagination = async (data: string) => {
+export const parsePagination = async (data: string): Promise<Pagination> => {
   const $ = await cheerio.load(data)
 
-  const result: any = {}
+  const result: Pagination = {
+    last: 1,
+    current: 1,
+  }
 
-  result.current = $('.pager-current').first().text() || '1'
+  const currentPageElm = $('.pager-current').first()
+  const lastPageElm = $('.pager-last').first()
 
-  const latsPageLink = $('.pager-last>a').first().attr('href')
+  if (currentPageElm.text()) {
+    result.current = Number(currentPageElm.text())
+  }
+
+  const latsPageLink = lastPageElm.children('a').attr('href')
 
   if (!latsPageLink) {
-    result.last = '1'
+    result.last = 1
     return result
   }
 
-  result.last = getParamFromURL(latsPageLink, 'page')
+  result.last = Number(getParamFromURL(latsPageLink, 'page'))
 
   return result
 }

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ISearchResults } from '../types'
 import { parseBookPage, parseSearchResult } from '../utils/parser'
 
 class FlibustaService {
@@ -15,7 +16,7 @@ class FlibustaService {
     FlibustaService.instance = this
   }
 
-  public async getSearchResult(search: string): Promise<any[]> {
+  public async getSearchResult(search: string): Promise<ISearchResults | undefined> {
     try {
       const response = await axios(this.searchUrl, {
         params: {
@@ -27,8 +28,6 @@ class FlibustaService {
         const result = await parseSearchResult(response.data)
         return result
       }
-
-      return []
     } catch (error) {
       throw new Error(`Flibusta Error: ${error}`)
     }

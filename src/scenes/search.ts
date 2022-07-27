@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { Context, Scenes } from 'telegraf'
 import { backKeyboard, mainKeyboard, resultKeyboard } from '../utils/keyboard'
 import FlibustaService from '../services/flibustaService'
-import { IMyContext } from '../types'
+import { IMyContext, ISearchResults } from '../types'
 
 const flibusta = new FlibustaService()
 
@@ -23,10 +22,10 @@ search.on('text', async (ctx) => {
 
   await ctx.reply(`Ищем книги по запросу ${searchText}`)
 
-  const result = await flibusta.getSearchResult(searchText)
+  const result: ISearchResults | undefined = await flibusta.getSearchResult(searchText)
 
   if (result?.books && result?.books.length) {
-    await ctx.reply('Результаты поиска:', resultKeyboard(result.books))
+    await ctx.reply('Результаты поиска:', resultKeyboard(result.books, result.pagination))
   } else {
     ctx.reply('Что-то пошло не так')
   }

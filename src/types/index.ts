@@ -2,13 +2,19 @@ import { Context, Scenes } from 'telegraf'
 
 export type Author = Record<'name' | 'link', string>
 
+export type Pagination = Record<'current' | 'last', number>
+
+// TODO: rename
 export interface ISearchResult {
   title: string
   src: string
   author: Author
 }
 
-export type SearchResults = ISearchResult[]
+export interface ISearchResults {
+  books: ISearchResult[]
+  pagination: Pagination
+}
 
 export interface IBook {
   title: string
@@ -18,7 +24,7 @@ export interface IBook {
 }
 
 export interface ISession extends Scenes.SceneSession {
-  searchResalt?: SearchResults
+  searchResalt?: ISearchResults
   book?: IBook
 }
 
